@@ -19,6 +19,7 @@ B. Create "Bare Bones" Romi Reference project in VSCode
 
 C. Add Values from SysID to Constants.java
 1. for general instructions see: https://docs.wpilib.org/en/stable/docs/software/pathplanning/trajectory-tutorial/entering-constants.html
+
 2. here are my values:
 ```java
 public final class Constants {
@@ -42,15 +43,15 @@ public final class Constants {
     }
 }
 ```
-3. NOTE: for kPDriveVel make sure you are using "WPILib (2020-)" setting in the SysID tool (the Ramsete Command project (see below) uses WPILib PIDController for the velocity loop)
+3. NOTE: for `kPDriveVel` make sure you are using "WPILib (2020-)" setting in the SysID tool (the Ramsete Command project (see below) uses WPILib PIDController for the velocity loop)
 
-D. Modify Bare Bones Romi to Track Ramsete Command Example Project
+D. Modify Bare Bones Romi to Have Functionality of the Ramsete Command Example Project
 --------------------------------------------------------------
 1. Modify RomiGyro.java to include methods of WPILib's Gyro.java class
 - add a `getAngle()` which just returns `getAngleZ()`
     - angle is expected to increase as the gyro turns clockwise when looked at from the top. NED axis convention.
 - add `getRotation2d()` (see WPILib Gyro class)
-    -  angle is expected to increase as the gyro turns counterclockwise when looked at from the top. NWU axis convention.
+    - angle is expected to increase as the gyro turns counterclockwise when looked at from the top. NWU axis convention.
 - add `getRate()` which just returns `getRateZ()`
 - my final version of RomiGyro.java is in the project
 

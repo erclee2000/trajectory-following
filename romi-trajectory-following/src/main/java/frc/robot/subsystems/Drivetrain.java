@@ -38,9 +38,9 @@ public class Drivetrain extends SubsystemBase {
     m_rightEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
     resetEncoders();
 
-    // could also include robot's starting field position, e.g., new
-    // DifferentialDriveOdometry(getGyroHeading(), new Pose2d(5.0, 13.5, new
-    // Rotation2d()));
+    /* could also include robot's starting position on the field, e.g., 
+     * m_odometry = new DifferentialDriveOdometry(getGyroHeading(), new Pose2d(5.0, 13.5, new Rotation2d()));
+     */
     m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
   }
 
@@ -139,7 +139,7 @@ public class Drivetrain extends SubsystemBase {
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
   }
-  // Resets the odometry to the specified pose; @param pose The pose to which to set the odometry.
+  // Resets the odometry to the specified pose.
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
     m_odometry.resetPosition(pose, m_gyro.getRotation2d());
