@@ -4,9 +4,13 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.sensors.RomiGyro;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,104 +26,133 @@ public class Drivetrain extends SubsystemBase {
   private final RomiGyro m_gyro = new RomiGyro();
   private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
 
+  // Odometry class to track the position of a differential drive robot on the field
+  // https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/intro-and-chassis-speeds.html#what-is-odometry
+  // https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/differential-drive-odometry.html
+  private final DifferentialDriveOdometry m_odometry;
+
   public Drivetrain() {
     m_rightMotor.setInverted(true);
 
-    m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);
-    m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);
+    m_leftEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
+    m_rightEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
     resetEncoders();
+
+    // could also include robot's starting field position, e.g., new
+    // DifferentialDriveOdometry(getGyroHeading(), new Pose2d(5.0, 13.5, new
+    // Rotation2d()));
+    m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
   }
 
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
     m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
   }
 
+  /**
+   * Controls the left and right sides of the drive directly with voltages.
+   * 
+   * @param leftVolts  the commanded left output
+   * @param rightVolts the commanded right output
+   */
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+    m_leftMotor.setVoltage(leftVolts);
+    m_rightMotor.setVoltage(rightVolts);
+    m_diffDrive.feed();
+  }
+
+  /**
+   * Sets the max output of the drive. Useful for scaling the drive to drive more
+   * slowly.
+   * 
+   * @param maxOutput the maximum output to which the drive will be constrained
+   */
+  public void setMaxOutput(double maxOutput) {
+    m_diffDrive.setMaxOutput(maxOutput);
+  }
+
+  /* start encoder methods */
   public void resetEncoders() {
     m_leftEncoder.reset();
     m_rightEncoder.reset();
   }
-
   public int getLeftEncoderCount() {
     return m_leftEncoder.get();
   }
-
   public int getRightEncoderCount() {
     return m_rightEncoder.get();
   }
-
-  public double getLeftDistanceInch() {
-    return m_leftEncoder.getDistance();
+  public Encoder getLeftEncoder() {
+    return m_leftEncoder;
   }
-
-  public double getRightDistanceInch() {
-    return m_rightEncoder.getDistance();
+  public Encoder getRightEncoder() {
+    return m_rightEncoder;
   }
-
-  public double getAverageDistanceInch() {
-    return (getLeftDistanceInch() + getRightDistanceInch()) / 2.0;
+  public double getAverageEncoderDistance() {
+    return (m_leftEncoder.getDistance() + m_rightEncoder.getDistance()) / 2.0;
   }
-
-  /**
-   * The acceleration in the X-axis.
-   *
-   * @return The acceleration of the Romi along the X-axis in Gs
-   */
-  public double getAccelX() {
-    return m_accelerometer.getX();
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(m_leftEncoder.getRate(), m_rightEncoder.getRate());
   }
+  /* end enconder methods */
 
-  /**
-   * The acceleration in the Y-axis.
-   *
-   * @return The acceleration of the Romi along the Y-axis in Gs
-   */
-  public double getAccelY() {
-    return m_accelerometer.getY();
-  }
-
-  /**
-   * The acceleration in the Z-axis.
-   *
-   * @return The acceleration of the Romi along the Z-axis in Gs
-   */
-  public double getAccelZ() {
-    return m_accelerometer.getZ();
-  }
-
-  /**
-   * Current angle of the Romi around the X-axis.
-   *
-   * @return The current angle of the Romi in degrees
-   */
-  public double getGyroAngleX() {
-    return m_gyro.getAngleX();
-  }
-
-  /**
-   * Current angle of the Romi around the Y-axis.
-   *
-   * @return The current angle of the Romi in degrees
-   */
-  public double getGyroAngleY() {
-    return m_gyro.getAngleY();
-  }
-
-  /**
-   * Current angle of the Romi around the Z-axis.
-   *
-   * @return The current angle of the Romi in degrees
-   */
-  public double getGyroAngleZ() {
-    return m_gyro.getAngleZ();
-  }
-
-  /** Reset the gyro. */
+  /* start gyro methods */
   public void resetGyro() {
     m_gyro.reset();
   }
 
+  // acceleration of the Romi along the axes in Gs
+  public double getAccelX() {
+    return m_accelerometer.getX();
+  }
+  public double getAccelY() {
+    return m_accelerometer.getY();
+  }
+  public double getAccelZ() {
+    return m_accelerometer.getZ();
+  }
+
+  // angle of the Romi in degrees
+  public double getGyroAngleX() {
+    return m_gyro.getAngleX();
+  }
+  public double getGyroAngleY() {
+    return m_gyro.getAngleY();
+  }
+  public double getGyroAngleZ() {
+    return m_gyro.getAngleZ();
+  }
+  // Zeroes the heading of the robot.
+  public void zeroHeading() {
+    m_gyro.reset();
+  }
+  // Returns the heading of the robot in degrees, from -180 to 180
+  public double getHeading() {
+    return m_gyro.getRotation2d().getDegrees();
+  }
+  // the turn rate of the robot, in degrees per second
+  public double getTurnRate() {
+    return -m_gyro.getRate();
+  }
+  /* end gyro methods */
+
+
+  /* start odometry methods */
+   // Returns the currently-estimated pose of the robot.
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+  }
+  // Resets the odometry to the specified pose; @param pose The pose to which to set the odometry.
+  public void resetOdometry(Pose2d pose) {
+    resetEncoders();
+    m_odometry.resetPosition(pose, m_gyro.getRotation2d());
+  }
+  /* end odometry methods */
+
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/differential-drive-odometry.html#updating-the-robot-pose
+    m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
   }
+
 }

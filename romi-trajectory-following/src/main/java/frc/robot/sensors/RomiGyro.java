@@ -154,4 +154,12 @@ public class RomiGyro {
   public Rotation2d getRotation2d() {
     return Rotation2d.fromDegrees(-getAngle());
   }
+
+  /**
+   * Get the rate of turn in degrees-per-second around the Z-axis.
+   * @return rate of turn in degrees-per-second
+   */
+  public double getRate() {
+    return getRateZ();
+  }
 }
