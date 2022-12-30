@@ -6,6 +6,7 @@ package frc.robot.sensors;
 
 import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.hal.SimDevice.Direction;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.hal.SimDouble;
 
 public class RomiGyro {
@@ -120,5 +121,37 @@ public class RomiGyro {
       m_angleYOffset = m_simAngleY.get();
       m_angleZOffset = m_simAngleZ.get();
     }
+  }
+
+  /**
+   * Return the heading of the robot in degrees.
+   *
+   * <p>The angle is continuous, that is it will continue from 360 to 361 degrees. This allows
+   * algorithms that wouldn't want to see a discontinuity in the gyro output as it sweeps past from
+   * 360 to 0 on the second time around.
+   *
+   * <p>The angle is expected to increase as the gyro turns clockwise when looked at from the top.
+   * It needs to follow the NED axis convention.
+   *
+   * @return the current heading of the robot in degrees.
+   */
+  public double getAngle(){
+    return getAngleZ();
+  }
+
+  /**
+   * Return the heading of the robot as a {@link edu.wpi.first.math.geometry.Rotation2d}.
+   *
+   * <p>The angle is continuous, that is it will continue from 360 to 361 degrees. This allows
+   * algorithms that wouldn't want to see a discontinuity in the gyro output as it sweeps past from
+   * 360 to 0 on the second time around.
+   *
+   * <p>The angle is expected to increase as the gyro turns counterclockwise when looked at from the
+   * top. It needs to follow the NWU axis convention.
+   *
+   * @return the current heading of the robot as a {@link edu.wpi.first.math.geometry.Rotation2d}.
+   */
+  public Rotation2d getRotation2d() {
+    return Rotation2d.fromDegrees(-getAngle());
   }
 }
