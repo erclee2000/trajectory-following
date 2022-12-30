@@ -47,16 +47,17 @@ public final class Constants {
 D. Modify Bare Bones Romi to Track Ramsete Command Example Project
 --------------------------------------------------------------
 1. Modify RomiGyro.java to include methods of WPILib's Gyro.java class
-- add a `getAngle()` method which just returns `getAngleZ()`
-- direction should be correct but might want to verify on robot (The angle is expected to increase as the gyro turns clockwise when looked at from the top. It needs to follow the NED axis convention.)
-    - add this method:
-```java  
-    public Rotation2d getRotation2d() {
-       return Rotation2d.fromDegrees(-getAngle());
-    }
-```
-- direction should be correct but might want to verify on robot (The angle is expected to increase as the gyro turns counterclockwise when looked at from the top. It needs to follow the NWU axis convention.)
+- add a `getAngle()` which just returns `getAngleZ()`
+    - angle is expected to increase as the gyro turns clockwise when looked at from the top. NED axis convention.
+- add `getRotation2d()` (see WPILib Gyro class)
+    -  angle is expected to increase as the gyro turns counterclockwise when looked at from the top. NWU axis convention.
+- add `getRate()` which just returns `getRateZ()`
+- my final version of RomiGyro.java is in the project
 
-2. Modify DriveTrain.java so it has comparable methods as the DriveSubsytem.java of the Ramsete Command project
+2. Modify DriveTrain.java so it has all methods of the DriveSubsytem.java of the Ramsete Command example project
+- basically this involves adding some odometry methods (`getPose()` and `resetOdometry`) and some encoder getter methods and gryo getter methods
+- also involves adding `tankDriveVolts()` which drives the Romi by voltage instead of the usual 0.0 to 1.0 speed values
+- override `periodic()` so that it updates the odometry 
+- my final version of Drivetrain.java is in the project
 
 3. Modify RobotContainer.java

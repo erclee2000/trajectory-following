@@ -50,7 +50,6 @@ public class Drivetrain extends SubsystemBase {
 
   /**
    * Controls the left and right sides of the drive directly with voltages.
-   * 
    * @param leftVolts  the commanded left output
    * @param rightVolts the commanded right output
    */
@@ -59,7 +58,6 @@ public class Drivetrain extends SubsystemBase {
     m_rightMotor.setVoltage(rightVolts);
     m_diffDrive.feed();
   }
-
   /**
    * Sets the max output of the drive. Useful for scaling the drive to drive more
    * slowly.
