@@ -144,13 +144,10 @@ public class Drivetrain extends SubsystemBase {
     resetEncoders();
     m_odometry.resetPosition(pose, m_gyro.getRotation2d());
   }
-  /* end odometry methods */
-
-
   @Override
   public void periodic() {
     // https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/differential-drive-odometry.html#updating-the-robot-pose
     m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
   }
-
+  /* end odometry methods */
 }

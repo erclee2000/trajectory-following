@@ -18,6 +18,7 @@ B. Create "Bare Bones" Romi Reference project in VSCode
 2. Delete everything except Constants.java, Drivetrain.java, RomiGyro.java, RobotContainer.java, Robot.java, Main.java (can keep ArcadeDrive.java for convience of using the controller)
 
 C. Add Values from SysID to Constants.java
+------------------------------------------
 1. for general instructions see: https://docs.wpilib.org/en/stable/docs/software/pathplanning/trajectory-tutorial/entering-constants.html
 
 2. here are my values:
@@ -26,20 +27,18 @@ public final class Constants {
     public static final class DriveConstants{
         public static final double kTrackwidthMeters = 0.14; //distance between wheels in meters
         public static final DifferentialDriveKinematics kDriveKinematics =
-            new DifferentialDriveKinematics(kTrackwidthMeters);
+            new DifferentialDriveKinematics(kTrackwidthMeters); //for convert chassis velocity to wheel velocity
     
         public static final int kEncoderCPR = 1440; //romi encoder is 12 per rev but gear ratio is 1:120
         public static final double kWheelDiameterMeters = 0.07;
-        public static final double kEncoderDistancePerPulse =
-            // Assumes the encoders are directly mounted on the wheel shafts
-            (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR;
+        public static final double kEncoderDistancePerPulse = (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR; //meters/per pulse
     
         // copy/paste values from SysID tool using the .json created by characterizing romi
-        public static final double ksVolts = 0.46435;
-        public static final double kvVoltSecondsPerMeter = 10.134;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.94359;
-        // to get proper velocity, make sure you are using "WPILib (2020-)" in sysid
-        public static final double kPDriveVel = 12.278;
+        public static final double ksVolts = 0.46435; //Ks (feedforward)
+        public static final double kvVoltSecondsPerMeter = 10.134; //Kv (feedforward)
+        public static final double kaVoltSecondsSquaredPerMeter = 0.94359; //Ka (feedforward)
+        // make sure you are using "WPILib (2020-)" in sysid
+        public static final double kPDriveVel = 12.278; //Kp (feedback)
     }
 }
 ```
@@ -61,4 +60,19 @@ D. Modify Bare Bones Romi to Have Functionality of the Ramsete Command Example P
 - override `periodic()` so that it updates the odometry 
 - my final version of Drivetrain.java is in the project
 
-3. Modify RobotContainer.java
+3. Modify Romi's RobotContainer.java to Match Ramsete Controller's RobotContainer.java
+- get Romi's `getAutonomousCommand()` to look like Ramsete project's by doing the following
+- ADD a feed forward controller:
+```java
+    SimpleMotorFeedforward simpleFeedForward = new SimpleMotorFeedforward(
+      DriveConstants.ksVolts,
+      DriveConstants.kvVoltSecondsPerMeter,
+      DriveConstants.kaVoltSecondsSquaredPerMeter
+    );
+```
+- read about feed forward controller here: https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/feedforward.html
+- ADD a voltage contstaint so robot doesn't accelerate too fast
+```java
+    var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(simpleFeedForward, DriveConstants.kDriveKinematics, 6);
+```
+- 
