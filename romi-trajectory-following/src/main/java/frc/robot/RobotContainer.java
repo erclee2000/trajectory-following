@@ -57,7 +57,7 @@ public class RobotContainer {
     DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
       feedforwardController, 
       DriveConstants.kDriveKinematics, 
-      6 //volts
+      6.0 //volts
     );
     // step two: add the constraint
     config.addConstraint(autoVoltageConstraint);
@@ -66,19 +66,21 @@ public class RobotContainer {
      * PART THREE: create a trajectory for robot to follow (all units in meters)
      * I created a separate class to do this but you could put code here
      */
-    Trajectory pathToFollow = new CreateTrajectory(config, "zigzag.wpilib.json").getPath();
+    Trajectory pathToFollow = new CreateTrajectory(config, "infinity.wpilib.json").getPath();
 
-    /** PART FOUR: create a RamseteCommand 
-     * 
+    /**  
+     * PART FOUR: create a RamseteCommand
      */
     // create PID Controllers for left and right side of robot that will be adjusted by Ramsete Command
     PIDController leftPIDcontroller = new PIDController(0.0, 0.0, 0.0);//kp, kd, ki will be adjusted by Ramsete Command
     PIDController rightPIDcontroller = new PIDController(0.0, 0.0, 0.0);//kp, kd, ki will be adjusted by Ramsete Command
 
-    // create a ramsete feedBACK controller that uses global pose. PID controllers only deals with the local pose. 
+    // create a ramsete feedBACK controller that uses global pose. 
+    // PID controllers only deals with the local pose. 
     // https://file.tavsys.net/control/controls-engineering-in-frc.pdf
     RamseteController ramseteController = new RamseteController(DriveConstants.kRamseteB, DriveConstants.kRamseteZeta);
 
+    //ramsete command using everything we've made up to this point
     RamseteCommand ramseteCommand = new RamseteCommand(
         pathToFollow,
         m_drivetrain::getPose,

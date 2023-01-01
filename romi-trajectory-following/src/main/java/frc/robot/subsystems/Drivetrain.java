@@ -141,6 +141,7 @@ public class Drivetrain extends SubsystemBase {
   }
   // Resets the odometry to the specified pose.
   public void resetOdometry(Pose2d pose) {
+    m_gyro.reset();
     resetEncoders();
     m_odometry.resetPosition(pose, m_gyro.getRotation2d());
   }
