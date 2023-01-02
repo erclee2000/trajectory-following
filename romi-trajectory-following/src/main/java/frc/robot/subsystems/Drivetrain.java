@@ -10,9 +10,12 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import frc.robot.CreateTrajectory;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.sensors.RomiGyro;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
@@ -26,6 +29,9 @@ public class Drivetrain extends SubsystemBase {
   private final RomiGyro m_gyro = new RomiGyro();
   private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
 
+  private final Field2d m_field = new Field2d(); // to output robot's actual path to Glass
+
+
   // Odometry class to track the position of a differential drive robot on the field
   // https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/intro-and-chassis-speeds.html#what-is-odometry
   // https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/differential-drive-odometry.html
@@ -38,10 +44,14 @@ public class Drivetrain extends SubsystemBase {
     m_rightEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
     resetEncoders();
 
-    /* could also include robot's starting position on the field, e.g., 
-     * m_odometry = new DifferentialDriveOdometry(getGyroHeading(), new Pose2d(5.0, 13.5, new Rotation2d()));
+    /**
+     * could also include robot's (x, y) position (meters) on the field like this: 
+     * m_odometry = new DifferentialDriveOdometry(getGyroHeading(), new Pose2d(5.0, 10.0, new Rotation2d()));
      */
     m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+    
+    SmartDashboard.putData("Field", m_field);
+    //m_field.getObject("traj").setTrajectory(CreateTrajectory.fromPathweaverFile("circle clockwise.wpilib.json"));
   }
 
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
@@ -149,6 +159,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     // https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/differential-drive-odometry.html#updating-the-robot-pose
     m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
+    m_field.setRobotPose(m_odometry.getPoseMeters());//to show the robot's actual path in Glass
   }
   /* end odometry methods */
 }

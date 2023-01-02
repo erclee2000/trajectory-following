@@ -41,8 +41,8 @@ public class RobotContainer {
      * I wrote a helper class called CreateTrajectory but 
      * also fine to just write the trajectory gen code here.
      * 
-     * option 1: use pathweaver generated file or
-     * option 2: write your own trajectory using x,y field coordinates (more precise, probably smoother)
+     * option 1: use pathweaver generated file (easier and visual)
+     * option 2: write your own trajectory using x,y field coordinates (more precise, maybe smoother)
      */
     //option 1: from pathweaver gen file
     Trajectory pathToFollow = CreateTrajectory.fromPathweaverFile("circle clockwise.wpilib.json");

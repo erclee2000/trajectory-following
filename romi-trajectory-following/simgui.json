@@ -1,4 +1,18 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "BuiltInAccel": {
+        "header": {
+          "open": true
+        }
+      },
+      "RomiGyro": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -14,7 +28,33 @@
       "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
-      "/LiveWindow/Ungrouped/Scheduler": "Scheduler"
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/SmartDashboard/Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "Robot": {
+          "arrows": false,
+          "color": [
+            0.05615628883242607,
+            0.26522114872932434,
+            0.6029411554336548,
+            255.0
+          ],
+          "selectable": false,
+          "style": "Line"
+        },
+        "height": 2.0,
+        "traj": {
+          "arrows": false,
+          "selectable": false,
+          "style": "Line"
+        },
+        "width": 5.0,
+        "window": {
+          "visible": true
+        }
+      }
     }
   }
 }
