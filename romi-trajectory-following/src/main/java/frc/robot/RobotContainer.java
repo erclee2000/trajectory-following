@@ -71,9 +71,9 @@ public class RobotContainer {
     /**  
      * PART FOUR: create a RamseteCommand
      */
-    // create PID Controllers for left and right side of robot that will be adjusted by Ramsete Command
-    PIDController leftPIDcontroller = new PIDController(0.0, 0.0, 0.0);//kp, kd, ki will be adjusted by Ramsete Command
-    PIDController rightPIDcontroller = new PIDController(0.0, 0.0, 0.0);//kp, kd, ki will be adjusted by Ramsete Command
+    // create PID Controllers for left and right side of robot
+    PIDController leftPIDcontroller = new PIDController(DriveConstants.kPDriveVel, 0.0, 0.0);//using kp from SysID
+    PIDController rightPIDcontroller = new PIDController(DriveConstants.kPDriveVel, 0.0, 0.0);//using kp from SysID
 
     // create a ramsete feedBACK controller that uses global pose. 
     // PID controllers only deals with the local pose. 
