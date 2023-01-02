@@ -4,9 +4,14 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
@@ -30,57 +35,50 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    /** 
-     * PART ONE: create feedfoward controller
-     * Feedforward controller handles known settings to make a system track a reference 
-     * Feedback controller compensates unknown runtime behvaior
-     * https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/feedforward.html
+       
+    /*
+     * step one: create a trajectory for robot to follow 
+     * I wrote a helper class called CreateTrajectory but 
+     * also fine to just write the trajectory gen code here.
+     * 
+     * option 1: use pathweaver generated file or
+     * option 2: write your own trajectory using x,y field coordinates (more precise, probably smoother)
      */
+    //option 1: from pathweaver gen file
+    Trajectory pathToFollow = CreateTrajectory.fromPathweaverFile("circle clockwise.wpilib.json");
+
+    // option 2: create a trajectory using x, y coordinates
+    // Trajectory pathToFollow = CreateTrajectory.fromCoordinates(
+    //   new Pose2d(0, 0, new Rotation2d(0)), // start pose in meters 
+    //   List.of(
+    //     new Translation2d(0.375, 0.125), //field x,y coordinates in meters
+    //     new Translation2d(0.625, 0.875) //field x,y coordinates in meters
+    //   ), // waypoints
+    //   new Pose2d(1, 1, new Rotation2d(0)), // end pose in meters
+    //   7.0 //max voltage
+    // );
+
+    /**
+     * step two: create feedforward and feedback controllers
+     */    
+    // create feedforward controller for known robot settings gathered from robot characterization
+    // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/feedforward.html
     SimpleMotorFeedforward feedforwardController = new SimpleMotorFeedforward(
       DriveConstants.ksVolts,
       DriveConstants.kvVoltSecondsPerMeter,
       DriveConstants.kaVoltSecondsSquaredPerMeter
     );//ks, kv, ka for feedforward as determined by charactrerizing robot w/ SysID tool
-       
-    /**
-     * PART TWO: create and set constraints for trajectory following
-     */
-    // the config for trajectory stores max velocity, max acceleration, and custom constraints
-    TrajectoryConfig config = new TrajectoryConfig(
-      DriveConstants.kMaxSpeedMetersPerSecond, //i think this is chassis velocity
-      DriveConstants.kMaxAccelerationMetersPerSecondSquared //i think this is chassis accel
-    );
-    // adding differential drive kinematics constraint to ensure that no wheel velocity goes above max velocity
-    config.setKinematics(DriveConstants.kDriveKinematics);
-    // adding a voltage constraint to the TrajectoryConfig in two steps
-    // step one: create the voltage constraint to ensure we don't accelerate too fast
-    DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-      feedforwardController, 
-      DriveConstants.kDriveKinematics, 
-      6.0 //volts
-    );
-    // step two: add the constraint
-    config.addConstraint(autoVoltageConstraint);
-
-    /**
-     * PART THREE: create a trajectory for robot to follow (all units in meters)
-     * I created a separate class to do this but you could put code here
-     */
-    Trajectory pathToFollow = new CreateTrajectory(config, "infinity.wpilib.json").getPath();
-
-    /**  
-     * PART FOUR: create a RamseteCommand
-     */
-    // create PID Controllers for left and right side of robot
-    PIDController leftPIDcontroller = new PIDController(DriveConstants.kPDriveVel, 0.0, 0.0);//using kp from SysID
-    PIDController rightPIDcontroller = new PIDController(DriveConstants.kPDriveVel, 0.0, 0.0);//using kp from SysID
-
-    // create a ramsete feedBACK controller that uses global pose. 
-    // PID controllers only deals with the local pose. 
-    // https://file.tavsys.net/control/controls-engineering-in-frc.pdf
+    
+    //ramsete feedforward controller https://file.tavsys.net/control/controls-engineering-in-frc.pdf
     RamseteController ramseteController = new RamseteController(DriveConstants.kRamseteB, DriveConstants.kRamseteZeta);
 
-    //ramsete command using everything we've made up to this point
+    // create PID Controllers for feedback gathered from runtime
+    PIDController leftPIDcontroller = new PIDController(DriveConstants.kPDriveVel, 0.0, 0.0);// using kp from SysID
+    PIDController rightPIDcontroller = new PIDController(DriveConstants.kPDriveVel, 0.0, 0.0);// using kp from SysID
+    
+    /**
+     * step three: create a ramsete command
+     */
     RamseteCommand ramseteCommand = new RamseteCommand(
         pathToFollow,
         m_drivetrain::getPose,
