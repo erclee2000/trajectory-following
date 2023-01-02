@@ -48,7 +48,7 @@ public class RobotContainer {
 
     // create a trajectory for robot to follow (all units in meters)
     // I created a helper class to do this but you could also put code here
-    Trajectory pathToFollow = CreateTrajectory.fromPathweaverFile("circle clockwise.wpilib.json");
+    Trajectory pathToFollow = CreateTrajectory.fromPathweaverFile("infinity.wpilib.json");
     // Trajectory pathToFollow = CreateTrajectory.fromCoordinates();
 
     // create PID Controllers for left and right side of robot

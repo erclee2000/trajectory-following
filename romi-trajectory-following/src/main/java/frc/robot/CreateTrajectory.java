@@ -14,13 +14,15 @@ import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.Filesystem;
 
 public class CreateTrajectory {
-    private static Trajectory m_path = new Trajectory();
+    private static Trajectory m_path;
 
     public static Trajectory fromPathweaverFile(String pathweaverFilename) {
         try {
+            
             m_path = TrajectoryUtil.fromPathweaverJson(
                 Filesystem.getDeployDirectory().toPath().resolve(pathweaverFilename)
-            );
+            );//TrajectoryUtil.fromPathweaverJson returns a new trajectory
+
         } catch (IOException ex) {
             // DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
             System.err.println("Unable to open trajectory: " + pathweaverFilename);//romi doesn't use driverstation
