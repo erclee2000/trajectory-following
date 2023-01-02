@@ -19,7 +19,7 @@ public final class Constants {
         // make sure you are using "WPILib (2020-)" in sysid
         public static final double kPDriveVel = 12.278; //Kp (feedback)
 
-        public static final double kMaxSpeedMetersPerSecond = 0.4;
+        public static final double kMaxSpeedMetersPerSecond = 0.6;
         public static final double kMaxAccelerationMetersPerSecondSquared = 0.4;
 
         // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
