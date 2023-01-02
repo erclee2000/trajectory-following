@@ -14,12 +14,29 @@ import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.Filesystem;
 
 public class CreateTrajectory {
-    private Trajectory path;
-    /**
-     * default constructor creates an s-shape trajectory
-     * @param trajectory confirguation
-     */
-    CreateTrajectory(TrajectoryConfig config) {
+    private static Trajectory m_path = new Trajectory();
+
+    public static Trajectory fromPathweaverFile(String pathweaverFilename) {
+        try {
+            m_path = TrajectoryUtil.fromPathweaverJson(
+                Filesystem.getDeployDirectory().toPath().resolve(pathweaverFilename)
+            );
+        } catch (IOException ex) {
+            // DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+            System.err.println("Unable to open trajectory: " + pathweaverFilename);//romi doesn't use driverstation
+        }
+        return m_path;
+    }
+
+    public static Trajectory fromCoordinates(
+        Pose2d startingPose, 
+        List<Translation2d> waypoints, 
+        Pose2d endingPose, 
+        double maxVoltage) {
+            return new Trajectory();
+    }
+}
+
         /* 90 degree turn toward increasing y-axis (Romi left-hand turn) */
         // this.path = TrajectoryGenerator.generateTrajectory(
         //     // start at the origin facing the +X direction
@@ -58,24 +75,3 @@ public class CreateTrajectory {
         //     new Pose2d(1, 1, new Rotation2d(0)),
         //     // provide our constraints
         //     config);
-    }
-
-    /**
-     * constructor that creates a path based on PathWeaver output
-     * @param trajectory confirguation
-     * @param name of the PathWeaver output file -- expects file to be in src/main/deploy
-     */
-    CreateTrajectory(TrajectoryConfig config, String pathweaverFilename) {
-        try {
-            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(pathweaverFilename);
-            this.path = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-        } catch (IOException ex) {
-            // DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
-            System.err.println("Unable to open trajectory: " + pathweaverFilename);//romi doesn't use driverstation
-        }
-    }
-
-    public Trajectory getPath() {
-        return path;
-    }
-}

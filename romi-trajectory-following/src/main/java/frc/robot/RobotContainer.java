@@ -30,57 +30,43 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    /** 
-     * PART ONE: create feedfoward controller
-     * Feedforward controller handles known settings to make a system track a reference 
-     * Feedback controller compensates unknown runtime behvaior
-     * https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/feedforward.html
-     */
+       
+    // // the config stores max velocity, max acceleration, and custom constraints
+    // TrajectoryConfig config = new TrajectoryConfig(
+    //   DriveConstants.kMaxSpeedMetersPerSecond, //i think this is chassis velocity
+    //   DriveConstants.kMaxAccelerationMetersPerSecondSquared //i think this is chassis accel
+    // );
+    // // ensuring that no wheel velocity goes above max velocity
+    // config.setKinematics(DriveConstants.kDriveKinematics);    
+    // // adding a voltage constraint to the TrajectoryConfig -- may not be necc. for pathweaver generated trajectories
+    // DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
+    //   feedforwardController,
+    //   DriveConstants.kDriveKinematics, 
+    //   6.0 //volts
+    // );
+    // config.addConstraint(autoVoltageConstraint);
+
+    // create a trajectory for robot to follow (all units in meters)
+    // I created a helper class to do this but you could also put code here
+    Trajectory pathToFollow = CreateTrajectory.fromPathweaverFile("circle clockwise.wpilib.json");
+    // Trajectory pathToFollow = CreateTrajectory.fromCoordinates();
+
+    // create PID Controllers for left and right side of robot that will be adjusted by Ramsete Command
+    PIDController leftPIDcontroller = new PIDController(0.0, 0.0, 0.0);//kp, kd, ki will be adjusted by Ramsete Command
+    PIDController rightPIDcontroller = new PIDController(0.0, 0.0, 0.0);//kp, kd, ki will be adjusted by Ramsete Command
+
+    // create a ramsete controller https://file.tavsys.net/control/controls-engineering-in-frc.pdf
+    RamseteController ramseteController = new RamseteController(DriveConstants.kRamseteB, DriveConstants.kRamseteZeta);
+
+    // create feedforward controller to handle known robot settings (feedback controller compensates unknown runtime behvaior)
+    // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/feedforward.html
     SimpleMotorFeedforward feedforwardController = new SimpleMotorFeedforward(
       DriveConstants.ksVolts,
       DriveConstants.kvVoltSecondsPerMeter,
       DriveConstants.kaVoltSecondsSquaredPerMeter
     );//ks, kv, ka for feedforward as determined by charactrerizing robot w/ SysID tool
-       
-    /**
-     * PART TWO: create and set constraints for trajectory following
-     */
-    // the config for trajectory stores max velocity, max acceleration, and custom constraints
-    TrajectoryConfig config = new TrajectoryConfig(
-      DriveConstants.kMaxSpeedMetersPerSecond, //i think this is chassis velocity
-      DriveConstants.kMaxAccelerationMetersPerSecondSquared //i think this is chassis accel
-    );
-    // adding differential drive kinematics constraint to ensure that no wheel velocity goes above max velocity
-    config.setKinematics(DriveConstants.kDriveKinematics);
-    // adding a voltage constraint to the TrajectoryConfig in two steps
-    // step one: create the voltage constraint to ensure we don't accelerate too fast
-    DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-      feedforwardController, 
-      DriveConstants.kDriveKinematics, 
-      6.0 //volts
-    );
-    // step two: add the constraint
-    config.addConstraint(autoVoltageConstraint);
 
-    /**
-     * PART THREE: create a trajectory for robot to follow (all units in meters)
-     * I created a separate class to do this but you could put code here
-     */
-    Trajectory pathToFollow = new CreateTrajectory(config, "infinity.wpilib.json").getPath();
-
-    /**  
-     * PART FOUR: create a RamseteCommand
-     */
-    // create PID Controllers for left and right side of robot that will be adjusted by Ramsete Command
-    PIDController leftPIDcontroller = new PIDController(0.0, 0.0, 0.0);//kp, kd, ki will be adjusted by Ramsete Command
-    PIDController rightPIDcontroller = new PIDController(0.0, 0.0, 0.0);//kp, kd, ki will be adjusted by Ramsete Command
-
-    // create a ramsete feedBACK controller that uses global pose. 
-    // PID controllers only deals with the local pose. 
-    // https://file.tavsys.net/control/controls-engineering-in-frc.pdf
-    RamseteController ramseteController = new RamseteController(DriveConstants.kRamseteB, DriveConstants.kRamseteZeta);
-
-    //ramsete command using everything we've made up to this point
+    // create the RamseteCommand and send it everything we made above
     RamseteCommand ramseteCommand = new RamseteCommand(
         pathToFollow,
         m_drivetrain::getPose,
