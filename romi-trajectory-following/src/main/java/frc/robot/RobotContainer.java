@@ -51,9 +51,9 @@ public class RobotContainer {
     Trajectory pathToFollow = CreateTrajectory.fromPathweaverFile("circle clockwise.wpilib.json");
     // Trajectory pathToFollow = CreateTrajectory.fromCoordinates();
 
-    // create PID Controllers for left and right side of robot that will be adjusted by Ramsete Command
-    PIDController leftPIDcontroller = new PIDController(0.0, 0.0, 0.0);//kp, kd, ki will be adjusted by Ramsete Command
-    PIDController rightPIDcontroller = new PIDController(0.0, 0.0, 0.0);//kp, kd, ki will be adjusted by Ramsete Command
+    // create PID Controllers for left and right side of robot
+    PIDController leftPIDcontroller = new PIDController(DriveConstants.kPDriveVel, 0.0, 0.0);//using kp from SysID
+    PIDController rightPIDcontroller = new PIDController(DriveConstants.kPDriveVel, 0.0, 0.0);//using kp from SysID
 
     // create a ramsete controller https://file.tavsys.net/control/controls-engineering-in-frc.pdf
     RamseteController ramseteController = new RamseteController(DriveConstants.kRamseteB, DriveConstants.kRamseteZeta);
