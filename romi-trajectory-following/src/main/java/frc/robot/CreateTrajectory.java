@@ -97,10 +97,3 @@ public class CreateTrajectory {
 // ),
 // new Pose2d(1, -1, new Rotation2d(-90)),
 // config);
-
-/* s-shape toward increasing y-axis (Romi's left) */
-// this.path = TrajectoryGenerator.generateTrajectory(
-// new Pose2d(0, 0, new Rotation2d(0)),
-// List.of(new Translation2d(0.5, 0.5)),
-// new Pose2d(1, 1, new Rotation2d(0)),
-// config);
