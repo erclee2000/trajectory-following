@@ -45,7 +45,7 @@ public class RobotContainer {
      * option 2: write your own trajectory using x,y field coordinates (more precise, maybe smoother)
      */
     //option 1: from pathweaver gen file
-    Trajectory pathToFollow = CreateTrajectory.fromPathweaverFile("circle clockwise.wpilib.json");
+    Trajectory pathToFollow = CreateTrajectory.fromPathweaverFile(DriveConstants.PATHWEAVERFILE);
 
     // option 2: create a trajectory using x, y coordinates
     // Trajectory pathToFollow = CreateTrajectory.fromCoordinates(

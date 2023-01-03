@@ -54,9 +54,9 @@ public final class Constants {
 D. Modified Bare Bones Romi to Have Functionality of the Ramsete Command Example Project
 --------------------------------------------------------------
 1. Modified RomiGyro.java to include methods of WPILib's Gyro.java class
-- add a `getAngle()` which just returns `getAngleZ()`
+- added a `getAngle()` (which just returned `getAngleZ()`)
     - angle is expected to increase as the gyro turns clockwise when looked at from the top. NED axis convention.
-- add `getRotation2d()` (see WPILib Gyro class)
+- added `getRotation2d()` (see WPILib Gyro class)
     - angle is expected to increase as the gyro turns counterclockwise when looked at from the top. NWU axis convention.
 - my final version of RomiGyro.java is in the project
 
@@ -67,6 +67,6 @@ D. Modified Bare Bones Romi to Have Functionality of the Ramsete Command Example
 - my final version of Drivetrain.java is in the project
 
 3. Modified Romi's RobotContainer.java to Match Ramsete Controller's RobotContainer.java
-- basically copy the Ramsete Controller's `getAutonomousCommand()` 
+- I basically copied the Ramsete Controller's `getAutonomousCommand()` 
 - I detailed the steps in my final version of RobotContainer.java in the project
 - NOTE: I rordered a lot of the code in Ramsete Controller's `getAutonomousCommand()` for my `getAutonomousCommand()` to make it more readable (imo). This included creating a helper class for trajectory generation (so you aren't writing the trajectory creation code in the command which is much better (imo) if you are manually creating a trajectory and not using pathweaver file)

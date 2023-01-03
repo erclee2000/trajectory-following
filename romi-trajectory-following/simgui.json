@@ -19,6 +19,10 @@
       "/LiveWindow/Drivetrain": "Subsystem",
       "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
       "/LiveWindow/Ungrouped/PIDController[10]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[11]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[12]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[13]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[14]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
@@ -34,7 +38,7 @@
     "windows": {
       "/SmartDashboard/Field": {
         "Robot": {
-          "arrows": false,
+          "arrowSize": 16,
           "color": [
             0.05615628883242607,
             0.26522114872932434,
@@ -42,7 +46,7 @@
             255.0
           ],
           "selectable": false,
-          "style": "Line"
+          "style": "Track"
         },
         "height": 2.0,
         "traj": {
@@ -54,6 +58,18 @@
         "window": {
           "visible": true
         }
+      }
+    }
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "height": 338
+        }
+      ],
+      "window": {
+        "visible": false
       }
     }
   }

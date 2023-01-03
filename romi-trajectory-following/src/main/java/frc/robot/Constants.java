@@ -25,5 +25,8 @@ public final class Constants {
         // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
+
+        //if using a pathweaver generated trajectory
+        public static String PATHWEAVERFILE = "circle clockwise.wpilib.json";
     }
 }
