@@ -1,4 +1,14 @@
-A. "Characterized" the Romi
+## Trajectory Following/PathWeaver with Romi
+
+Caveats
+1. I am not an expert programmer and do not code for a living
+2. I relied on other projects.
+- overall I looked at Daltz3's project here https://www.chiefdelphi.com/t/from-romi-path-following-to-frc-robot/393857
+- To get the Romi to work with SysID (for characterizing the robot) I used this project https://github.com/bb-frc-workshops/romi-examples/tree/main/romi-characterization-sysid
+- there was another project I took a quick look at just to see if my characterization constants were reasonable and it also gave me the idea of using the Romi Reference example project and converting that project to the Ramsete Command example code.
+3. I read (and sometimes reread) the FRC Docs--they are quite helpful.
+
+Step One. "Characterized" the Romi
 -----------------------
 1. Forked https://github.com/bb-frc-workshops/romi-examples/tree/main/romi-characterization-sysid
 2. Used romi-characterization-sysid project with WPILib's SysID tool ctl+shift+p -> start tool -> sysid
@@ -12,12 +22,12 @@ A. "Characterized" the Romi
 6. Opened .json in SysID and verified that data looked good https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/analyzing-data.html
 
 
-B. Created "Bare Bones" Romi Reference project in VSCode 
+Step Two. Created "Bare Bones" Romi Reference project in VSCode 
 -----------------------------------------
 1. ctl+shift+p -> Create New Project -> Romi Reference
 2. Deleted everything except Main.java, Robot.java, RobotContainer.java, Constants.java, Drivetrain.java, RomiGyro.java  (can keep ArcadeDrive.java for the convience of using the controller to reset the Romi during testing)
 
-C. Added Values from SysID to Constants.java
+Step Three. Added Values from SysID to Constants.java
 ------------------------------------------
 1. for general instructions see: https://docs.wpilib.org/en/stable/docs/software/pathplanning/trajectory-tutorial/entering-constants.html
 
@@ -51,7 +61,7 @@ public final class Constants {
 ```
 3. NOTE: for `kPDriveVel` make sure you are using "WPILib (2020-)" setting in the SysID tool (the Ramsete Command project (see below) uses WPILib PIDController for the velocity loop)
 
-D. Modified Bare Bones Romi to Have Functionality of the Ramsete Command Example Project
+Step Four. Modified Bare Bones Romi to Have Functionality of the Ramsete Command Example Project
 --------------------------------------------------------------
 1. Modified RomiGyro.java to include methods of WPILib's Gyro.java class
 - added a `getAngle()` (which just returned `getAngleZ()`)
@@ -78,7 +88,7 @@ D. Modified Bare Bones Romi to Have Functionality of the Ramsete Command Example
 - I detailed the steps in my final version of RobotContainer.java in the project
 - NOTE: I rordered a lot of the code in Ramsete Controller's `getAutonomousCommand()` for my `getAutonomousCommand()` to make it more readable (imo). This included creating a helper class for trajectory generation (so you aren't writing the trajectory creation code in the command which is much better (imo) if you are manually creating a trajectory and not using pathweaver file)
 
-E. Created Paths using PathWeaver
+Step Five. Created Paths using PathWeaver
 --------------------------------------------------------------
 1. I basically followed the FRC tutorial on PathWeaver here https://docs.wpilib.org/en/stable/docs/software/pathplanning/pathweaver/index.html
     NOTE: path should use small distances for Romi--pathweaver shows the whole field which is huge for Romi
