@@ -63,10 +63,42 @@ D. Modified Bare Bones Romi to Have Functionality of the Ramsete Command Example
 2. Modified DriveTrain.java so it had all methods of the DriveSubsytem.java of the Ramsete Command example project
 - basically this involves adding some odometry methods (`getPose()` and `resetOdometry()`) and some encoder getter methods and gryo getter methods
 - also involves adding `tankDriveVolts()` which drives the Romi by voltage instead of the usual 0.0 to 1.0 speed values
-- override `periodic()` so that it updates the odometry 
+- override `periodic()` so that it updates the odometry
+    - note you may want to output the x, y coordinates of the Romi onto SmartDashboard for debugging. Like this: 
+
+```java
+    SmartDashboard.putNumber("robot's x", m_odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("robot's y", m_odometry.getPoseMeters().getY());
+```
+
 - my final version of Drivetrain.java is in the project
 
 3. Modified Romi's RobotContainer.java to Match Ramsete Controller's RobotContainer.java
 - I basically copied the Ramsete Controller's `getAutonomousCommand()` 
 - I detailed the steps in my final version of RobotContainer.java in the project
 - NOTE: I rordered a lot of the code in Ramsete Controller's `getAutonomousCommand()` for my `getAutonomousCommand()` to make it more readable (imo). This included creating a helper class for trajectory generation (so you aren't writing the trajectory creation code in the command which is much better (imo) if you are manually creating a trajectory and not using pathweaver file)
+
+E. Created Paths using PathWeaver
+--------------------------------------------------------------
+1. I basically followed the FRC tutorial on PathWeaver here https://docs.wpilib.org/en/stable/docs/software/pathplanning/pathweaver/index.html
+    NOTE: path should use small distances for Romi--pathweaver shows the whole field which is huge for Romi
+2. I set max acceleration to 0.4 and max velocity to 0.4
+3. After creating a reasonable (simple) path, and then doing "build paths" in pathweaver, I copied the generated json to java/frc/robot/deploy (e.g., "circle clockwise.wpilib.json")
+4. I updated Constants file to include a constant for the file name of the generated json (I used the filename in two places in the code)
+5. You can also output the planned trajectory and the actual robot position into the Sim GUI or Glass. You can do this by adding code to Drivetrain.java. Basically I followed the instructions here with little to no changes: https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html
+
+```java
+  private final Field2d m_field = new Field2d(); // to output robot's actual path to Glass
+
+  public Drivetrain() {
+      . . .
+    SmartDashboard.putData("Field", m_field);
+    m_field.getObject("traj").setTrajectory(CreateTrajectory.fromPathweaverFile(DriveConstants.PATHWEAVERFILE));
+  }
+    . . .
+  @Override
+  public void periodic() {
+    m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
+    m_field.setRobotPose(m_odometry.getPoseMeters());//to show the robot's actual path in Glass
+```
+6. My paths are in the project in java/frc/robot/deploy
