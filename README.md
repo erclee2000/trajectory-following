@@ -20,6 +20,7 @@ Step One. "Characterized" the Romi
     - dynamic velocity -- reduced from 7.00 to 4.00
 - NOTE: You should not need to do 1 to 3 if you are doing this an actual robot with a roborio. Instead follow the instructions for characterizing your robot provided by FRC. I believe you put the hardware info about your motors, drivetrain, and gryo into SysID and then use "deploy" which would then deploy the code for running the four tests to the Roborio. More details here: https://docs.wpilib.org/en/2022/docs/software/pathplanning/system-identification/configuring-project.html
 4. Ran each of the four test by starting test, using "auton" from the romi-characterization-sysid project 
+- NOTE: the robot does NOT stop on its own during the tests. You have to switch it to disabled after it run for ample distance otherwise it will continue to go (and crash into a wall).
 5. Saved data to .json file (sysid_data_meters_and_velo_4.0.json)
 6. Opened .json in SysID and verified that data looked good https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/analyzing-data.html
 
@@ -28,7 +29,7 @@ Step Two. Created "Bare Bones" Romi Reference project in VSCode
 -----------------------------------------
 1. ctl+shift+p -> Create New Project -> Romi Reference
 2. Deleted everything except Main.java, Robot.java, RobotContainer.java, Constants.java, Drivetrain.java, RomiGyro.java  (can keep ArcadeDrive.java for the convience of using the controller to reset the Romi during testing)
-- NOTE: If you are doing this on actual robot, you could start with an empty template. You could also just start with the RamseteCommand example bot, but really that is the end point, and there is a lot of code in there to learn/understand. 
+- NOTE: If you are doing this on actual robot, you could start with an empty template with the goal being to slowly add code to the empty template to get it looking like the RamseteCommand example project. You could also just start with the RamseteCommand example bot, but really that is the end point, and there is a lot of code in there for students to learn/understand. 
 
 Step Three. Added Values from SysID to Constants.java
 ------------------------------------------
