@@ -5,6 +5,7 @@ Caveats
 2. I relied on other projects.
 - overall I looked at Daltz3's project here https://www.chiefdelphi.com/t/from-romi-path-following-to-frc-robot/393857
 - To get the Romi to work with SysID (for characterizing the robot) I used this project https://github.com/bb-frc-workshops/romi-examples/tree/main/romi-characterization-sysid
+    - YOU SHOULD NOT NEED TO DO THIS STEP IF YOU ARE PROGRAMMING AN ACTUAL ROBOT WITH A ROBORIO
 - there was another project I took a quick look at just to see if my characterization constants were reasonable and it also gave me the idea of using the Romi Reference example project and converting that project to the Ramsete Command example code.
 3. I read (and sometimes reread) the FRC Docs--they are quite helpful.
 
@@ -17,6 +18,7 @@ Step One. "Characterized" the Romi
     - "Unit Type" to meters 
     - wheel circumference  0.2199  
     - dynamic velocity -- reduced from 7.00 to 4.00
+- NOTE: You should not need to do 1 to 3 if you are doing this an actual robot with a roborio. Instead follow the instructions for characterizing your robot provided by FRC. I believe you put the hardware info about your motors, drivetrain, and gryo into SysID and then use "deploy" which would then deploy the code for running the four tests to the Roborio. More details here: https://docs.wpilib.org/en/2022/docs/software/pathplanning/system-identification/configuring-project.html
 4. Ran each of the four test by starting test, using "auton" from the romi-characterization-sysid project 
 5. Saved data to .json file (sysid_data_meters_and_velo_4.0.json)
 6. Opened .json in SysID and verified that data looked good https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/analyzing-data.html
@@ -26,12 +28,13 @@ Step Two. Created "Bare Bones" Romi Reference project in VSCode
 -----------------------------------------
 1. ctl+shift+p -> Create New Project -> Romi Reference
 2. Deleted everything except Main.java, Robot.java, RobotContainer.java, Constants.java, Drivetrain.java, RomiGyro.java  (can keep ArcadeDrive.java for the convience of using the controller to reset the Romi during testing)
+- NOTE: If you are doing this on actual robot, you could start with an empty template. You could also just start with the RamseteCommand example bot, but really that is the end point, and there is a lot of code in there to learn/understand. 
 
 Step Three. Added Values from SysID to Constants.java
 ------------------------------------------
 1. for general instructions see: https://docs.wpilib.org/en/stable/docs/software/pathplanning/trajectory-tutorial/entering-constants.html
 
-2. here are my values:
+2. here are my values for ROMI:
 ```java
 public final class Constants {
     public static final class DriveConstants{
@@ -86,10 +89,12 @@ Step Four. Modified Bare Bones Romi to Have Functionality of the Ramsete Command
 3. Modified Romi's RobotContainer.java to Match Ramsete Controller's RobotContainer.java
 - I basically copied the Ramsete Controller's `getAutonomousCommand()` 
 - I detailed the steps in my final version of RobotContainer.java in the project
-- NOTE: I rordered a lot of the code in Ramsete Controller's `getAutonomousCommand()` for my `getAutonomousCommand()` to make it more readable (imo). This included creating a helper class for trajectory generation (so you aren't writing the trajectory creation code in the command which is much better (imo) if you are manually creating a trajectory and not using pathweaver file)
+- NOTE: I reordered a lot of the code in Ramsete Controller's `getAutonomousCommand()` for my `getAutonomousCommand()` to make it more readable (imo). This included creating a helper class for trajectory generation (so you aren't writing the trajectory creation code in the command which is much better (imo) if you are manually creating a trajectory and not using pathweaver file)
 
 Step Five. Created Paths using PathWeaver
 --------------------------------------------------------------
+- NOTE: Before doing this step, you should manually create paths and test them. The RamseteCommand has one manually created path, its like an S-curve. But you should be absolutely certain that your robot follows basic paths like a straight line, 90 degree turn to the right, 90 degree turn to the left before using PathWeaver to generate paths.
+
 1. I basically followed the FRC tutorial on PathWeaver here https://docs.wpilib.org/en/stable/docs/software/pathplanning/pathweaver/index.html
     NOTE: path should use small distances for Romi--pathweaver shows the whole field which is huge for Romi
 2. I set max acceleration to 0.4 and max velocity to 0.4
